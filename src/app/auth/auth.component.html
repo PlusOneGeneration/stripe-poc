@@ -1,0 +1,64 @@
+<ul class="nav nav-tabs justify-content-center">
+  <li class="nav-item">
+    <a class="nav-link" [ngClass]="{'active text-danger': tab == 1}" (click)="setTab(1)">Login</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" [ngClass]="{'active text-danger': tab == 2}" (click)="setTab(2)">Signup</a>
+  </li>
+</ul>
+
+<div class="p-4 border border-top-0">
+  <form #myForm="ngForm" (ngSubmit)="login(myForm)" *ngIf="tab == 1">
+    <div class="form-group mb-2">
+      <label>Email</label>
+      <input class="form-control" name="email" ngModel
+             autocomplete="off"
+             required email (change)="resetError()" />
+    </div>
+    <div class="form-group mb-2">
+      <label>Password</label>
+      <input class="form-control" name="password" ngModel
+             type="password"
+             autocomplete="off"
+             required password (change)="resetError()" />
+    </div>
+    <div class="form-group pt-3 mb-0 text-center">
+      <button type="submit" class="btn btn-primary">Login</button>
+    </div>
+    <div class="bg-danger text-white px-3 py-2" *ngIf="error && error?.code && error?.message">
+      <h4>{{error?.code}}</h4>
+      <p>{{error?.message}}</p>
+    </div>
+  </form>
+
+  <form #signupForm="ngForm" (ngSubmit)="signup(signupForm)" *ngIf="tab == 2">
+    <div class="form-group mb-2">
+      <label>Full Name</label>
+      <input class="form-control" name="fullName" ngModel
+             autocomplete="off"
+             required fullName (change)="resetError()" />
+    </div>
+    <div class="form-group mb-2">
+      <label>Email</label>
+      <input class="form-control" name="email" ngModel
+             autocomplete="off"
+             required email (change)="resetError()" />
+    </div>
+    <div class="form-group mb-2">
+      <label>Password</label>
+      <input class="form-control" name="password" ngModel
+             type="password"
+             autocomplete="off"
+             required password (change)="resetError()" />
+    </div>
+    <div class="form-group pt-3 mb-0 text-center">
+      <button type="submit" class="btn btn-primary">Signup</button>
+    </div>
+    <div class="bg-danger text-white px-3 py-2" *ngIf="error && error?.code && error?.message">
+      <h4>{{error?.code}}</h4>
+      <p>{{error?.message}}</p>
+    </div>
+  </form>
+</div>
+
+
