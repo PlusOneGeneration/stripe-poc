@@ -18,8 +18,6 @@ It means you already have accounts for Firebase and Stripe to start.
 Otherwise you can visit:
 - `https://firebase.google.com/` -- to launch Firebase account
 - `https://stripe.com` -- to launch account for Stripe
-- run ` npm i ` in `/functions/` folder to install dependencies
-
 
 ## Installation
 
