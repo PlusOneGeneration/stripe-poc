@@ -8,7 +8,7 @@
 </div>
 
 <div class="row mb-4">
-  <div class="col">
+  <div class="col-6">
     <div class="mb-2" *ngIf="!productFormState">
       <button class="btn btn-sm btn-primary" (click)="toggleProductForm()">Add new product</button>
     </div>
@@ -24,7 +24,7 @@
           <input class="form-control" name="title" ngModel
                  placeholder="Title"
                  autocomplete="off"
-                 required title (change)="resetError()" />
+                 required title (change)="resetError()"/>
         </div>
       </div>
       <div class="form-group mb-2 row justify-content-center">
@@ -35,7 +35,7 @@
                  type="number"
                  min="0"
                  autocomplete="off"
-                 required price (change)="resetError()" />
+                 required price (change)="resetError()"/>
           <div class="input-group-addon">$</div>
         </div>
       </div>
@@ -55,17 +55,15 @@
       <li class="list-group-item small py-2 px-4"
           *ngFor="let product of products$ | async">
         <h6 class="mb-0 text-primary">{{product?.payload?.val().title}}</h6>
-        <div>{{product?.payload?.val().price}}</div>
+        <div>$ {{product?.payload?.val().price}}</div>
       </li>
     </ul>
 
     <p class="text-muted small text-center py-1 px-2 border rounded"
-        *ngIf="!(products$ | async)?.length">No products yet</p>
+       *ngIf="!(products$ | async)?.length">No products yet</p>
   </div>
-</div>
 
-<div class="row mb-4" *ngIf="(users$ | async)?.length">
-  <div class="col">
+  <div class="col-6" *ngIf="(users$ | async)?.length" style="padding-top: 2.4rem;">
     <h5>Users:</h5>
     <ul class="list-group">
       <li class="list-group-item small py-2 px-4"
@@ -77,3 +75,158 @@
   </div>
 </div>
 
+<hr>
+
+<div class="row mb-4">
+  <div class="col mb-4">
+    <div class="mb-2" *ngIf="!offerFormState">
+      <button class="btn btn-sm btn-primary" (click)="toggleOfferForm()">Make an offer</button>
+    </div>
+
+    <form #offerForm="ngForm"
+          *ngIf="offerFormState"
+          class="border rounded p-3 mb-4 bg-light">
+
+      <h5 class="mb-3 text-center">Make an offer</h5>
+
+      <div class="form-group mb-2 row justify-content-center">
+        <label class="col-sm-2 col-form-label">Product</label>
+        <div class="col-sm-6 input-group">
+          <div ngbDropdown class="d-block" *ngIf="(products$ | async)?.length">
+            <button class="btn btn-outline-primary"
+                    id="dropdownBasic1"
+                    ngbDropdownToggle>
+              {{selectedProduct?.title ? selectedProduct?.title : 'Products'}}
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+              <button class="dropdown-item d-flex justify-content-between"
+                      (click)="selectProduct(product, offerForm)"
+                      *ngFor="let product of products$ | async">
+                <div>{{product.payload.val().title}}</div>
+                <div>($ {{product.payload.val().price}})</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group mb-2 row justify-content-center">
+        <label class="col-sm-2 col-form-label">User</label>
+        <div class="col-sm-6 input-group">
+          <div ngbDropdown class="d-block" *ngIf="(users$ | async | without: me)?.length">
+            <button class="btn btn-outline-primary"
+                    id="dropdownBasic2"
+                    ngbDropdownToggle>
+              {{selectedUser?.fullName ? selectedUser?.fullName : 'Users'}}
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+              <button class="dropdown-item"
+                      (click)="selectUser(user, offerForm)"
+                      *ngFor="let user of (users$ | async | without: me)">
+                <div>{{user.payload.val().fullName}}</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group pt-2 mb-0 text-center">
+        <button type="submit" class="btn btn-sm btn-success" (click)="makeOffer(offerForm)">Make offer</button>
+        <button type="button" class="btn btn-sm btn-danger" (click)="cancel(offerForm)">Cancel</button>
+      </div>
+
+      <div class="bg-danger text-white px-3 py-2" *ngIf="error && error?.code && error?.message">
+        <h4>{{error?.code}}</h4>
+        <p>{{error?.message}}</p>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-6">
+    <h5>My offers:</h5>
+    <ul class="list-group" *ngIf="(offers$ | async)?.length">
+      <li class="list-group-item small p-2"
+          *ngFor="let offer of offers$ | async">
+        <div class="border rounded bg-light p-2 small">
+          <div class="text-info">
+            Offer Id: #{{offer?.key}}
+          </div>
+          <h6 class="p-0 m-0"><span class="small">Customer: </span> {{(offer?.customer$ |
+            async)?.payload?.val()?.fullName}}</h6>
+          <h5 class="p-0 m-0">
+            <span class="small">Product: </span> "{{offer?.payload?.val()?.product?.title}}"
+            <span class="text-primary font-weight-bold">(${{offer?.payload?.val()?.product?.price}})</span>
+          </h5>
+          <div>
+            <span>Status: </span>
+            <span [ngClass]="offer?.payload?.val()?.statusPaid ? 'text-success' : 'text-danger'">
+                {{offer?.payload?.val()?.statusPaid ? 'Paid !' : 'Pending...'}}
+              </span>
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <p class="text-muted small text-center py-1 px-2 border rounded"
+       *ngIf="!(offers$ | async)?.length">No offers were made yet</p>
+  </div>
+
+  <div class="col-6">
+    <h5>Offered to me:</h5>
+    <ul class="list-group" *ngIf="(offersForMe$ | async)?.length">
+      <li class="list-group-item small p-2"
+          *ngFor="let offer of offersForMe$ | async">
+        <div class="border rounded offered p-2 small">
+          <div class="text-info">
+            Offer Id: #{{offer?.key}}
+          </div>
+          <h6 class="p-0 m-0"><span class="small">Shop: </span> {{(offer?.shop$ | async)?.payload?.val()?.fullName}}
+          </h6>
+          <h5 class="p-0 m-0">
+            <span class="small">Product: </span> "{{offer?.payload?.val()?.product?.title}}"
+            <span class="text-primary font-weight-bold">(${{offer?.payload?.val()?.product?.price}})</span>
+          </h5>
+          <div>
+            <span>Status: </span>
+            <span [ngClass]="offer?.payload?.val()?.statusPaid ? 'text-success' : 'text-danger'">
+                {{offer?.payload?.val()?.statusPaid ? 'Paid !' : 'Pending...'}}
+              </span>
+          </div>
+
+          <button *ngIf="!offer?.payload?.val()?.statusPaid" (click)="openCheckout(offer)">Purchase</button>
+        </div>
+      </li>
+    </ul>
+
+    <p class="text-muted small text-center py-1 px-2 border rounded"
+       *ngIf="!(offersForMe$ | async)?.length">Nobody offered anything yet</p>
+
+  </div>
+</div>
+
+<hr>
+
+<div class="row mb-4">
+  <div class="col">
+    <h5>My Orders:</h5>
+
+    <ul class="list-group" *ngIf="(orders$ | async)?.length">
+      <li class="list-group-item small p-2"
+          *ngFor="let order of orders$ | async">
+        <div class="border rounded bg-light p-2 small">
+          <div class="text-info">
+            Offer Id: #{{order.key}}
+          </div>
+          <h5 class="p-0 m-0">
+            <span class="small">Product: </span> "{{order?.payload?.val()?.product?.title}}"
+            <span class="text-primary font-weight-bold">(${{order?.payload?.val()?.product?.price}})</span>
+          </h5>
+        </div>
+      </li>
+    </ul>
+
+    <p class="text-muted small text-center py-1 px-2 border rounded"
+       *ngIf="!(orders$ | async)?.length">You haven't bought anything yet</p>
+  </div>
+</div>

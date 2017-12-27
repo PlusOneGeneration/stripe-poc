@@ -1,27 +1,38 @@
 # StripePoc
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.2.
+## Overview
 
-## Development server
+It's POC (Proof of Concept) project to show minimal workflow of Stripe payments with combination of Angular 2/4 and Firebase Functions.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+It has minimal wrapping of Authentication (login/signup). Public - private zones.
 
-## Code scaffolding
+Private zone it's kind of Dashboard place where you (as user) can add **Products**, make **Offers** to **Users** *(shop-like behavior)*. Offers created by you can be found in section **My offers**.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+To cover customer's behavior you can **Purchase** **Products** in section **Offered to me**.
 
-## Build
+**Purchasing** -- it's payment action which touches all elements of application: Angular -> Stripe -> Firebase Function. In the end of Positive action it will add **Order** to **Customer**'s orders list.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+## Pre-setup
 
-## Running unit tests
+It means you already have accounts for Firebase and Stripe to start. 
+Otherwise you can visit:
+- `https://firebase.google.com/` -- to launch Firebase account
+- `https://stripe.com` -- to launch account for Stripe
+- run ` npm i ` in `/functions/` folder to install dependencies
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+## Installation
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+1. **Important!** Put your Firebase (app project settings) and Stripe (publick key) credentials to `/src/environments/environment.ts`
+2. Run `npm i` to install dependencies
+3. Run `npm start` to run Client side. You can find working project at `http://localhost:4200` in your browser
+4. Setup `Firebase Tools` in case you don't have them by installing `npm i firebase-tools  --save`
+5. Init Functions by running this command: `firebase init` and select `Functions` and your Firebase project to work with.
+6. Next follow `/functions/README.md` to setup and deploy functions.
 
-## Further help
+## Testing
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Visit `Sign In` (Signup) section to create at least pair of users for testing purposes. (ex. User1 and User2)
+
+It will allow to Make offers by **User1** to **User2** (or vice versa) and test purchase action from both sides (shop and customer points of view).
+
