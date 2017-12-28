@@ -1,5 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+//TODO @@@slava pretty common name, seems like withoutUser
+
 @Pipe({
   name: 'without'
 })

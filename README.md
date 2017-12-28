@@ -9,7 +9,7 @@
 - Functions remove TypeScript it should be ES6 (Please check node version for firebase functions)
   - because codebase has written on ES6
   - there is no written strict typed code
-
+- Please check tag `@@@` in codebase it contains about 30 issues and todos.
 
 ## Overview
 

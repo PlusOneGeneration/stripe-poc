@@ -9,6 +9,7 @@ export class UserService {
 
   constructor(public afAuth: AngularFireAuth,
               private db: AngularFireDatabase) {
+
     this.afAuth.auth.onAuthStateChanged((user) => {
       if (user && user.uid) {
         this.db.database.goOnline();
@@ -50,8 +51,10 @@ export class UserService {
           .set(user.uid, createUser(user));
       })
       .catch((err: any) => {
+
         // Ensure User in DB if already exists in FB AUTH but not in FB DB
         if (err && err.code === 'auth/email-already-in-use') {
+          //TODO @@@slava please extract to readable method like ensureUserInDB
           this.login(email, pass)
             .then((user) => {
               if (user && user.uid) {
@@ -59,6 +62,7 @@ export class UserService {
                   .valueChanges()
                   .subscribe((userInDb) => {
                     if (userInDb && !userInDb.length) {
+                      //TODO @@@slava uncontrolled async flow
                       this.db.list('/users')
                         .set(user.uid, createUser(user));
                     }
@@ -66,13 +70,17 @@ export class UserService {
               }
             })
             .catch((err) => {
+            //TODO @@@slava remove log and delegate error
               console.log('>>>>> email-already-in-use', err);
             });
         }
+
+        //TODO @@@slava it seems like ignore any error except 'auth/email-already-in-use' please delegate
       });
   }
 
   logout() {
+    //TODO @@@slava async flow? if yes please handle
     this.afAuth.auth.signOut();
   }
 }

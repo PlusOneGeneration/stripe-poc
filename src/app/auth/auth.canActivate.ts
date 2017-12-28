@@ -9,6 +9,7 @@ export class AuthCanActivate implements CanActivate, CanActivateChild {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    //TODO @@@slava remove new Promise
     return new Promise((resolve) => {
       this.authService
         .isAuthenticated()

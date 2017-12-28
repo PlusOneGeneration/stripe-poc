@@ -7,6 +7,8 @@ import {NgForm} from '@angular/forms';
 import {environment} from "../../environments/environment";
 import {HttpClient} from '@angular/common/http';
 
+//TODO @@@slava it seems all functionality in the one controller
+//TODO @@@slava it make sense to split to routing and multiple controllers
 @Component({
   selector: 'app-private',
   templateUrl: 'private.component.html',
@@ -24,16 +26,35 @@ export class PrivateComponent {
   offerFormState: boolean = false;
   selectedProduct: any;
   selectedUser: any;
+
+  //TODO @@@slava make it configurable in environment
   stripeApi = 'https://us-central1-stripe-poc-52493.cloudfunctions.net/api';
 
   constructor(private db: AngularFireDatabase,
               private http: HttpClient,
               private UserService: UserService) {
+
+    //TODO @@@slava private db: AngularFireDatabase must be removed from Component/Controller part,
+    //TODO @@@slava please extract all methods to the service and make it re-usable and readable
+    //TODO @@@slava use YourService instead of db: AngularFireDatabase
+    //TODO @@@slava please decide how many service do you need it seems like 2-3 services should help to solve the component tasks
+
+    //TODO @@@slava please re-think it could be part of service, I mean codebase bellow
+    // This part could be refactored to service, seems like common re-usable code
+    //
+    // this.products$ = this.db.list('/products',
+    //   ref => ref.orderByChild('createdBy').equalTo(this.me._id)
+    // ).snapshotChanges();
+    //
+    // this.offers$ = this.db.list('/offers',
+
     this.UserService.user$.subscribe((user) => {
       this.me = user;
 
+      //TODO @@@slava can it be without ._id?
       if (this.me && this.me._id) {
         this.users$ = this.db.list('/users').snapshotChanges();
+        //TODO @@@slava please take care about un-subscribe for this.users$ and other *$ props
 
         this.products$ = this.db.list('/products',
           ref => ref.orderByChild('createdBy').equalTo(this.me._id)
@@ -68,6 +89,8 @@ export class PrivateComponent {
   }
 
   addProduct(form) {
+    //TODO @@@slava please don't use this.db directly in the controller
+    //TODO @@@slava please extract readable and re-usable methods to service
     if (form.value && form.valid && this.me) {
       let data = form.value;
       data['createdBy'] = this.me._id;
@@ -98,6 +121,7 @@ export class PrivateComponent {
       data['from'] = this.me._id;
       data['statusPaid'] = false;
 
+      //TODO @@@slava to service, etc..
       this.db.list('/offers').push(data);
 
       form.reset();
@@ -139,6 +163,8 @@ export class PrivateComponent {
   }
 
   openCheckout(offer: any) {
+
+    //TODO @@@slava 'Stripe POC' remove magic words
     let stripeData = {
       name: 'Stripe POC',
       description: `Purchase: "${offer.payload.val().product.title}"`,
@@ -146,6 +172,7 @@ export class PrivateComponent {
       email: this.me.email
     };
 
+    //TODO @@@slava to separated checkout service
     let handler = (<any>window).StripeCheckout.configure({
       key: environment.stripe.key,
       locale: 'auto',
@@ -166,6 +193,7 @@ export class PrivateComponent {
 
     let postData = Object.assign({}, stripeData, payload);
 
+    //TODO @@@slava to service
     this.http
       .post(`${this.stripeApi}/charge`, postData)
       .subscribe(res => {

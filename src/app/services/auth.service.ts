@@ -8,6 +8,11 @@ export class AuthService {
   constructor(private userService: UserService,
               private afAuth: AngularFireAuth,
               private router: Router) {
+    //TODO @@@slava this.afAuth.auth.onAuthStateChanged((user) => { seems like can be removed
+    //TODO @@@slava it seems like we just can listen to user form user service
+    //TODO @@@slava it will collect afAuth usage in one place instead of multiple refs in multipe service
+    //TODO @@@slava SRP (single responsibility) only one service should listen to onAuthStateChanged
+
     this.afAuth.auth.onAuthStateChanged((user) => {
       this.userService.updateUser(user);
       if (user && user.uid) {
@@ -23,6 +28,7 @@ export class AuthService {
       this.userService.getMe()
         .subscribe((user) => {
           if (user && (user._id || user.uid)) {
+            //TODO @@@slava make sense to make it bool only
             return resolve(`logged in: ${user.uid || user._id}`);
           } else {
             return resolve(false);

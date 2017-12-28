@@ -9,7 +9,9 @@ export class PrivateCanActivate implements CanActivate, CanActivateChild {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    //TODO @@@slava  just remove new Promise
     return new Promise((resolve) => {
+      //TODO @@@slava its already returns promise just use .then() .catch() chain
       this.authService
         .isAuthenticated()
         .then((authResult) => resolve(!!authResult))
