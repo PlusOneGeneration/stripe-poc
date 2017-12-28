@@ -26,7 +26,20 @@ app.use(require("body-parser").urlencoded({extended: false}));
 app.post('/charge', (req, res) => {
   let result = {};
 
+  //TODO @@@slava please rewrite this in Promise chaing instead of (resolve, reject) callbacks it leads to unhandled errors
+  // Like this:
+  // Promise.resolve()
+  //   .then(() => {
+  //     if (req.body.stripeId) {
+  //       return stripe.customers
+  //         .retrieve(req.body.stripeId)
+  //     })
+
+
   new Promise((resolve, reject) => {
+    //TODO @@@slava please split codebase to service, extract parts as separated files
+    //TODO @@@slava it should be clear readable what is going on
+
     if (req.body.stripeId) {
       stripe.customers
         .retrieve(req.body.stripeId)
@@ -39,9 +52,13 @@ app.post('/charge', (req, res) => {
           source: req.body.source
         })
         .then((customer: any) => {
+
+          //TODO @@@slava who resolves promise? who ensure that data in DB?
+          //TODO @@@slava functions shuld be off or some error, need to handle
           db.ref('/users/' + req.body.customerId)
             .child('stripeId')
             .set(customer.id);
+
           return resolve(customer)
         }).catch(err => reject(err));
     }
@@ -59,12 +76,15 @@ app.post('/charge', (req, res) => {
     .then((charge: any) => {
       result['charge'] = charge;
 
+      //TODO @@@slava when you extract codebase to service dont use req.body
       db.ref('/offers/' + req.body.offerId)
         .update({
           statusPaid: charge.paid,
           chargeId: charge.id,
           updatedAt: admin.database.ServerValue.TIMESTAMP
         }).then(() => {
+
+        //TODO @@@slava uncontrolled callbacks / promises please ensure that saved data
         db.ref('/offers/' + req.body.offerId)
           .once('value', (offer) => {
             db.ref('/orders/' + req.body.offerId)
@@ -72,7 +92,9 @@ app.post('/charge', (req, res) => {
           });
 
         return res.json(result)
-      }).catch((err) => Promise.reject(err));
+      })
+        //TODO @@@slava seems like overhead
+        .catch((err) => Promise.reject(err));
     })
     .catch((error) => res.status(400).send({error}));
 });
