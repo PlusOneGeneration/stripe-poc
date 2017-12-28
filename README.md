@@ -1,5 +1,16 @@
 # StripePoc
 
+### Review
+- _Please remove this section from readme when its done_
+
+- Organise structure as 2 separated apps like:
+  - frontend
+  - functions
+- Functions remove TypeScript it should be ES6 (Please check node version for firebase functions)
+  - because codebase has written on ES6
+  - there is no written strict typed code
+
+
 ## Overview
 
 It's POC (Proof of Concept) project to show minimal workflow of Stripe payments with combination of Angular 2/4 and Firebase Functions.
