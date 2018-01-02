@@ -22,6 +22,7 @@ export class AuthService {
     return new Promise((resolve) => {
       this.userService.getMe()
         .subscribe((user) => {
+          console.log('>>>>> user', user)
           if (user && (user._id || user.uid)) {
             return resolve(`logged in: ${user.uid || user._id}`);
           } else {

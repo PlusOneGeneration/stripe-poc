@@ -6,21 +6,29 @@ import {WithoutPipe} from "../pipes/without.pipe";
 import {FormsModule} from "@angular/forms";
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {HttpClientModule} from '@angular/common/http';
+import {ProfileComponent} from './profile/profile.component';
+import {BlankComponent} from './blank/blank.component';
+import {PrivateRoutingModule} from "./private-routing.module";
+import {PaymentService} from "./services/payment.service";
 
 @NgModule({
   imports: [
     FormsModule,
     CommonModule,
     NgbModule,
-    HttpClientModule
+    HttpClientModule,
+    PrivateRoutingModule
   ],
   declarations: [
     PrivateComponent,
-    WithoutPipe
+    WithoutPipe,
+    ProfileComponent,
+    BlankComponent
   ],
   providers: [
     PrivateCanActivate,
-    WithoutPipe
+    WithoutPipe,
+    PaymentService
   ],
   exports: [
     PrivateComponent,

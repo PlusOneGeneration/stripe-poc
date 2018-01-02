@@ -34,6 +34,17 @@ export class UserService {
       .signInWithEmailAndPassword(email, pass)
   }
 
+  updateUserData(user, data) {
+    console.log('>>>>> user', user)
+    let userId = user && (user._id || user.uid) ? (user._id || user.uid) : user;
+    let dataToUpdate = Object.assign({}, {
+      _id: userId
+    }, data);
+
+    return this.db.object('/users/' + userId)
+      .update(dataToUpdate);
+  }
+
   signup(email: string, pass: string, name: string) {
     let createUser = (user) => {
       return {

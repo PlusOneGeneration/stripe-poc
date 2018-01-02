@@ -1,0 +1,39 @@
+<div class="row">
+  <div class="col">
+    <form #profileForm="ngForm" (ngSubmit)="update(profileForm)">
+      <div class="form-group mb-2">
+        <label>Full Name</label>
+        <input class="form-control" name="fullName" [ngModel]="me?.fullName"
+               autocomplete="off"
+               required fullName />
+      </div>
+
+      <div class="form-group pt-3 mb-0 text-center">
+        <button type="button" class="btn btn-primary" routerLink="/private">Back</button>
+        <button type="submit" class="btn btn-success">Update</button>
+      </div>
+
+    </form>
+
+    <form #stripeForm="ngForm" (ngSubmit)="updateStripe(stripeForm)">
+
+      <div class="form-group mb-2">
+        <label>Stripe Public Key</label>
+        <input class="form-control" name="public_key" [ngModel]="stripe?.public_key"
+               autocomplete="off"
+               required public_key />
+      </div>
+
+      <div class="form-group mb-2">
+        <label>Stripe Secret Key</label>
+        <input class="form-control" name="secret_key" [ngModel]="stripe?.secret_key"
+               autocomplete="off"
+               required secret_key />
+      </div>
+
+      <div class="form-group pt-3 mb-0 text-center">
+        <button type="submit" class="btn btn-success">Update</button>
+      </div>
+    </form>
+  </div>
+</div>

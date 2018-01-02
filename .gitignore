@@ -43,3 +43,5 @@ Thumbs.db
 
 .firebaserc
 /src/environments/___environment.local.ts
+/src/environments/temp_emails.txt
+

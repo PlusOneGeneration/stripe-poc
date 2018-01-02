@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {UserService} from "../services/user.service";
 import {AngularFireDatabase} from 'angularfire2/database';
 import {Observable} from "rxjs/Observable";
-import 'rxjs/add/operator/switchMap';
 import {NgForm} from '@angular/forms';
 import {environment} from "../../environments/environment";
 import {HttpClient} from '@angular/common/http';
@@ -14,6 +13,7 @@ import {HttpClient} from '@angular/common/http';
 })
 export class PrivateComponent {
   me: any = null;
+  userStripe: any = null;
   users$: Observable< Array<any> >;
   products$: Observable< Array<any> >;
   offers$: Observable< Array<any> >;
@@ -34,6 +34,12 @@ export class PrivateComponent {
 
       if (this.me && this.me._id) {
         this.users$ = this.db.list('/users').snapshotChanges();
+
+        this.db.object('/stripes/'+this.me._id)
+          .valueChanges()
+          .subscribe((userStripe:any) => {
+            this.userStripe = userStripe;
+          });
 
         this.products$ = this.db.list('/products',
           ref => ref.orderByChild('createdBy').equalTo(this.me._id)
@@ -95,6 +101,7 @@ export class PrivateComponent {
       let data = form.value;
 
       data['createdBy'] = this.me._id;
+      data['stripePublicKey'] = this.userStripe.public_key;
       data['from'] = this.me._id;
       data['statusPaid'] = false;
 
@@ -140,14 +147,14 @@ export class PrivateComponent {
 
   openCheckout(offer: any) {
     let stripeData = {
-      name: 'Stripe POC',
+      name: environment.name,
       description: `Purchase: "${offer.payload.val().product.title}"`,
       amount: offer.payload.val().product.price * 100,
-      email: this.me.email
+      email: Date.now() + this.me.email
     };
 
     let handler = (<any>window).StripeCheckout.configure({
-      key: environment.stripe.key,
+      key: offer.payload.val().stripePublicKey,
       locale: 'auto',
       token: (token: any) => this.makePayment(token, offer, stripeData)
     });
@@ -158,10 +165,11 @@ export class PrivateComponent {
   makePayment(token: any, offer: any, stripeData: any) {
     let payload = {
       source: token.id,
-      email: this.me.email,
       customerId: this.me._id,
       stripeId: this.me.stripeId || null,
-      offerId: offer.key
+      offerId: offer.key,
+      stripePublicKey: offer.payload.val().stripePublicKey,
+      shopId: offer.payload.val().createdBy
     };
 
     let postData = Object.assign({}, stripeData, payload);

@@ -2,7 +2,10 @@
   <div class="col">
     <div class="d-flex justify-content-between">
       <h3 class="mb-0">Private dashboard</h3>
-      <h5 class="mb-0" *ngIf="me && me._id">Hello, {{me?.fullName || me?.email}}!</h5>
+      <h5 class="mb-0" *ngIf="me && me._id">
+        Hello, {{me?.fullName || me?.email}}!
+        <a class="small text-info" routerLink="./profile">(Edit)</a>
+      </h5>
     </div>
   </div>
 </div>

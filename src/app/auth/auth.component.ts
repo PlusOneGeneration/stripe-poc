@@ -36,7 +36,6 @@ export class AuthComponent implements OnInit {
         code: 'Check form',
         message: 'form data is invalid'
       }
-
     }
   }
 
