@@ -9,17 +9,14 @@ export class AuthCanActivate implements CanActivate, CanActivateChild {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    return new Promise((resolve) => {
-      this.authService
-        .isAuthenticated()
-        .then((authResult) => resolve(!authResult))
-        .catch((err) => {
-          console.log('[AuthCanActivate ERROR]:', err);
-          this.router.navigateByUrl('/private');
-          return resolve(false)
-        })
-    })
-
+    return this.authService
+      .isAuthenticated()
+      .then((authResult) => !authResult)
+      .catch((err) => {
+        console.log('[AuthCanActivate ERROR]:', err);
+        this.router.navigateByUrl('/private');
+        return false;
+      })
   }
 
   canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {

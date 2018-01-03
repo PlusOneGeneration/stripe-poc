@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'without'
+  name: 'withoutUser'
 })
-export class WithoutPipe implements PipeTransform {
+export class WithoutUserPipe implements PipeTransform {
   transform(users: Array<any>, without: any): Array<any> {
     if (users && users.length) {
       return users.filter((user) => ((user && user.key) || (user && user.uid) || (user && user._id)) !==

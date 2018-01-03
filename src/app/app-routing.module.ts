@@ -14,12 +14,11 @@ const routes = [
   {
     path: '',
     children: [
-      ...authRoutes,
       ...publicRoutes,
+      ...authRoutes,
       ...privateRoutes
     ],
-  },
-  {path: '**', redirectTo: '/home'}
+  }
 ];
 
 @NgModule({

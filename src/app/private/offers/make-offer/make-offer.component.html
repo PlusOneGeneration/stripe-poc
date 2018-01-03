@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="col">
+    <form #offerForm="ngForm"
+          class="border rounded p-3 mb-4 bg-light">
+
+      <h5 class="mb-3 text-center">Make an offer</h5>
+
+      <div class="form-group mb-2 row justify-content-center">
+        <label class="col-sm-2 col-form-label">For user</label>
+        <div class="col-sm-6 input-group">
+          <p>{{user?.fullName}}</p>
+        </div>
+      </div>
+
+      <div class="form-group mb-2 row justify-content-center">
+        <label class="col-sm-2 col-form-label">Product</label>
+        <div class="col-sm-6 input-group">
+          <div ngbDropdown class="d-block" *ngIf="(products$ | async)?.length">
+            <button class="btn btn-outline-primary"
+                    id="dropdownBasic1"
+                    ngbDropdownToggle>
+              {{selectedProduct?.title ? selectedProduct?.title : 'Products'}}
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+              <button class="dropdown-item d-flex justify-content-between"
+                      (click)="selectProduct(product, offerForm)"
+                      *ngFor="let product of products$ | async">
+                <div>{{product.payload.val().title}}</div>
+                <div>($ {{product.payload.val().price}})</div>
+              </button>
+            </div>
+          </div>
+
+          <div class="d-block" *ngIf="!(products$ | async)?.length">
+            <span class="btn btn-link border rounded">Please add products</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group pt-2 mb-0 text-center">
+        <button type="submit" class="btn btn-sm btn-success" (click)="makeOffer(offerForm)">Make offer</button>
+        <button type="button" class="btn btn-sm btn-danger" (click)="cancel(offerForm)">Cancel</button>
+      </div>
+
+      <div class="bg-danger text-white mt-2 px-3 py-2" *ngIf="error && error?.code && error?.message">
+        <h4>{{error?.code}}</h4>
+        <p>{{error?.message}}</p>
+      </div>
+    </form>
+  </div>
+</div>

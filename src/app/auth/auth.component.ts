@@ -42,7 +42,7 @@ export class AuthComponent implements OnInit {
   signup(form) {
     if (form.value && form.valid) {
       this.UserService.signup(form.value.email, form.value.password, form.value.fullName)
-        .then(() => form.reset())
+        .then((res) => form.reset())
         .catch((err) => this.error = err);
     } else {
       this.error = {

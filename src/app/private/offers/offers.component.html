@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-6">
+    <h5>Users:</h5>
+
+    <ul class="list-group" *ngIf="(users$ | async | withoutUser: me)?.length">
+      <li class="list-group-item small p-2"
+          *ngFor="let user of users$ | async | withoutUser: me">
+        <button class="btn btn-sm btn-info small float-right"
+                [routerLink]="['./make-offer', user?.payload?.val()._id]">Make offer</button>
+        <h6 class="mb-0 text-info">{{user?.payload?.val().fullName}}</h6>
+        <div>{{user?.payload?.val().email}}</div>
+      </li>
+    </ul>
+
+    <p class="text-muted small text-center py-1 px-2 border rounded"
+       *ngIf="!(users$ | async | withoutUser: me)?.length">No users yet</p>
+  </div>
+
+  <div class="col-6">
+    <h5>My offers:</h5>
+
+    <ul class="list-group" *ngIf="(offers$ | async)?.length">
+      <li class="list-group-item small p-2"
+          *ngFor="let offer of offers$ | async">
+        <div class="border rounded bg-light p-2 small">
+          <div class="text-info">
+            Offer Id: #{{offer?.key}}
+          </div>
+          <h6 class="p-0 m-0"><span class="small">Customer: </span> {{(offer?.customer$ |
+            async)?.payload?.val()?.fullName}}</h6>
+          <h5 class="p-0 m-0">
+            <span class="small">Product: </span> "{{offer?.payload?.val()?.product?.title}}"
+            <span class="text-primary font-weight-bold">(${{offer?.payload?.val()?.product?.price}})</span>
+          </h5>
+          <div>
+            <span>Status: </span>
+            <span [ngClass]="offer?.payload?.val()?.statusPaid ? 'text-success' : 'text-danger'">
+                {{offer?.payload?.val()?.statusPaid ? 'Paid !' : 'Pending...'}}
+              </span>
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <p class="text-muted small text-center py-1 px-2 border rounded"
+       *ngIf="!(offers$ | async)?.length">No offers were made yet</p>
+  </div>
+</div>

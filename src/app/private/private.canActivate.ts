@@ -9,16 +9,14 @@ export class PrivateCanActivate implements CanActivate, CanActivateChild {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    return new Promise((resolve) => {
-      this.authService
-        .isAuthenticated()
-        .then((authResult) => resolve(!!authResult))
-        .catch((err) => {
-          console.log('[PrivateCanActivate ERROR]:', err);
-          this.router.navigateByUrl('/auth');
-          return resolve(true)
-        })
-    })
+    return this.authService
+      .isAuthenticated()
+      .then((authResult) => !!authResult)
+      .catch((err) => {
+        console.log('[PrivateCanActivate ERROR]:', err);
+        this.router.navigateByUrl('/auth');
+        return true;
+      })
   }
 
   canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {

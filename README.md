@@ -21,16 +21,17 @@ Otherwise you can visit:
 
 ## Installation
 
-1. **Important!** Put your Firebase (app project settings) and Stripe (publick key) credentials to `/src/environments/environment.ts`
+1. **Important!** Put your Firebase (app project settings) and Stripe (publick key) credentials to `/src/environments/environment.ts`, use `/src/environments/environment.dist.ts ` as example for this
 2. Run `npm i` to install dependencies
 3. Run `npm start` to run Client side. You can find working project at `http://localhost:4200` in your browser
-4. Setup `Firebase Tools` in case you don't have them by installing `npm i firebase-tools  --save`
-5. Init Functions by running this command: `firebase init` and select `Functions` and your Firebase project to work with.
-6. Next follow `/functions/README.md` to setup and deploy functions.
+4. Use `/src/environments/firebase.rules.json` as rules for FB Database 
+5. Don't forget to install Functions side. Follow `/functions/README.md` to setup and deploy functions.
 
 ## Testing
 
-Visit `Sign In` (Signup) section to create at least pair of users for testing purposes. (ex. User1 and User2)
+1. Visit `Sign In` (Signup) section to create at least pair of users for testing purposes. (ex. User1 and User2)
+2. Make pair of Stripe accounts.
+3. Edit user profiles: put Stripe keys details for each user.
 
 It will allow to Make offers by **User1** to **User2** (or vice versa) and test purchase action from both sides (shop and customer points of view).
 

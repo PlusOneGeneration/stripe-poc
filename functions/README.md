@@ -6,15 +6,17 @@ It means you already have accounts for Firebase and Stripe to start.
 Otherwise you can visit:
 - `https://firebase.google.com/` -- to launch Firebase account
 - `https://stripe.com` -- to launch account for Stripe
-- run ` npm i ` in `/functions/` folder to install dependencies
+- setup `Firebase Tools` in case you don't have them by installing `npm i firebase-tools`
+- run `firebase init`, chose `functions` and your test project. don't forget to bypass all overwrites, except installing dependencies
+- or you can run separatelly ` npm i ` to install dependencies
 
 
 ### Setup
 
 **1. Setup Firebase credentials for Function:**
 - to do this you need to visit Firebase Console (`https://console.firebase.google.com`) --> Project Settings --> Service Account --> Create Private Key --> save your `<private_key>.json`
-- rename and move `<private_key>.json` -->`/functions/env/firebase-admin.json`
-- as example (without actual credentials) you can check `/functions/env/firebase-admin.dist.json`
+- rename and move `<private_key>.json` -->`/env/firebase-admin.json`
+- as example (without actual credentials) you can check `/env/firebase-admin.dist.json`
 
 
 
@@ -22,7 +24,7 @@ Otherwise you can visit:
 - you can find them by link `https://dashboard.stripe.com/account/apikeys`
 - use `Publishable key` as `public_key`
 - use `Secret key` as `secret_key`
-- as example please use `/functions/env/stripe-credentials.json`
+- as example please use `/env/stripe-credentials.json`
 
 
 

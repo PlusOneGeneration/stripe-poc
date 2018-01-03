@@ -1,0 +1,55 @@
+<div class="row">
+  <div class="col-6">
+    <h5>Offered to me:</h5>
+    <ul class="list-group" *ngIf="(offersForMe$ | async)?.length">
+      <li class="list-group-item small p-2"
+          *ngFor="let offer of offersForMe$ | async">
+        <div class="border rounded offered p-2 small">
+          <div class="text-info">
+            Offer Id: #{{offer?.key}}
+          </div>
+          <h6 class="p-0 m-0"><span class="small">Shop: </span> {{(offer?.shop$ | async)?.payload?.val()?.fullName}}
+          </h6>
+          <h5 class="p-0 m-0">
+            <span class="small">Product: </span> "{{offer?.payload?.val()?.product?.title}}"
+            <span class="text-primary font-weight-bold">(${{offer?.payload?.val()?.product?.price}})</span>
+          </h5>
+          <div>
+            <span>Status: </span>
+            <span [ngClass]="offer?.payload?.val()?.statusPaid ? 'text-success' : 'text-danger'">
+                {{offer?.payload?.val()?.statusPaid ? 'Paid !' : 'Pending...'}}
+              </span>
+          </div>
+
+          <button *ngIf="!offer?.payload?.val()?.statusPaid" (click)="openCheckout(offer)">Purchase</button>
+        </div>
+      </li>
+    </ul>
+
+    <p class="text-muted small text-center py-1 px-2 border rounded"
+       *ngIf="!(offersForMe$ | async)?.length">Nobody offered anything yet</p>
+
+  </div>
+
+  <div class="col-6">
+    <h5>My Orders:</h5>
+
+    <ul class="list-group" *ngIf="(orders$ | async)?.length">
+      <li class="list-group-item small p-2"
+          *ngFor="let order of orders$ | async">
+        <div class="border rounded bg-light p-2 small">
+          <div class="text-info">
+            Offer Id: #{{order.key}}
+          </div>
+          <h5 class="p-0 m-0">
+            <span class="small">Product: </span> "{{order?.payload?.val()?.product?.title}}"
+            <span class="text-primary font-weight-bold">(${{order?.payload?.val()?.product?.price}})</span>
+          </h5>
+        </div>
+      </li>
+    </ul>
+
+    <p class="text-muted small text-center py-1 px-2 border rounded"
+       *ngIf="!(orders$ | async)?.length">You haven't bought anything yet</p>
+  </div>
+</div>

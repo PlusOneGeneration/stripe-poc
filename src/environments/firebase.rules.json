@@ -1,0 +1,34 @@
+{
+  "rules": {
+    "users": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": "_id"
+    },
+
+    "products": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": "createdBy"
+    },
+
+    "offers": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": ["createdBy", "to"]
+    },
+
+    "orders": {
+      ".read": "auth != null",
+      ".write": false,
+      ".indexOn": ["createdBy", "to"]
+    },
+
+    "stripes": {
+      "$userId": {
+        ".read": "auth != null && $userId == auth.uid",
+        ".write": "auth != null && $userId == auth.uid"
+      }
+    }
+  }
+}

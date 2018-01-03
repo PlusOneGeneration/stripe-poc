@@ -16,10 +16,10 @@ export class ProfileComponent implements OnInit {
               private PaymentService: PaymentService) {
     this.UserService.user$.subscribe((user) => {
       this.me = user;
-    });
 
-    this.PaymentService.getStripeData().subscribe((stripe) => {
-      this.stripe = stripe;
+      this.PaymentService.getStripeData().subscribe((stripe) => {
+        this.stripe = stripe;
+      });
     });
   }
 

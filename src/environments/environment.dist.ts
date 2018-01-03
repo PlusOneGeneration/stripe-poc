@@ -5,6 +5,7 @@
 
 export const environment = {
   production: false,
+  name: "**Stripe Project Name**",
   firebase: {
     apiKey: "XXX",
     authDomain: "XXX",
@@ -13,7 +14,5 @@ export const environment = {
     storageBucket: "XXX",
     messagingSenderId: "XXX"
   },
-  stripe: {
-    key: "XXX"
-  }
+  apiEndpoint: "https://XXX"
 };

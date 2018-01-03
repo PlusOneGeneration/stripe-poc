@@ -2,21 +2,28 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {AngularFireAuth} from 'angularfire2/auth';
 import {AngularFireDatabase} from 'angularfire2/database';
+import {Router} from "@angular/router";
 
 @Injectable()
 export class UserService {
   user$: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor(public afAuth: AngularFireAuth,
+              private router: Router,
               private db: AngularFireDatabase) {
+
     this.afAuth.auth.onAuthStateChanged((user) => {
       if (user && user.uid) {
         this.db.database.goOnline();
         this.db.object(`/users/${user.uid}`).valueChanges()
-          .subscribe((userDb) => this.updateUser(userDb))
+          .subscribe((userDb) => {
+            this.updateUser(userDb);
+            this.router.navigateByUrl('/private');
+          });
       } else {
         this.updateUser(null);
         this.db.database.goOffline();
+        this.router.navigateByUrl('/auth');
       }
     });
   }
@@ -29,24 +36,46 @@ export class UserService {
     return this.user$;
   }
 
+  getUsers() {
+    return this.db.list('/users').snapshotChanges();
+  }
+
   login(email: string, pass: string) {
     return this.afAuth.auth
       .signInWithEmailAndPassword(email, pass)
   }
 
   updateUserData(user, data) {
-    console.log('>>>>> user', user)
     let userId = user && (user._id || user.uid) ? (user._id || user.uid) : user;
     let dataToUpdate = Object.assign({}, {
       _id: userId
     }, data);
 
-    return this.db.object('/users/' + userId)
-      .update(dataToUpdate);
+    return new Promise((resolve, reject) => {
+      return this.db.object('/users/' + userId)
+        .update(dataToUpdate).then(
+          () => resolve(true),
+          (err) => reject(err)
+        );
+    });
+  }
+
+  getUserById(userId) {
+    return this.db.object('/users/' + userId).snapshotChanges();
+  }
+
+  setUserById(userId, data) {
+    return new Promise((resolve, reject) => {
+      return this.db.list('/users').set(userId, data)
+        .then(
+          () => resolve(true),
+          (err) => reject(err)
+        );
+    });
   }
 
   signup(email: string, pass: string, name: string) {
-    let createUser = (user) => {
+    let setUserData = (user) => {
       return {
         _id: user.uid,
         fullName: name,
@@ -54,33 +83,32 @@ export class UserService {
       }
     };
 
-    return this.afAuth.auth
-      .createUserWithEmailAndPassword(email, pass)
-      .then((user) => {
-        user && user.uid && this.db.list('/users')
-          .set(user.uid, createUser(user));
-      })
-      .catch((err: any) => {
-        // Ensure User in DB if already exists in FB AUTH but not in FB DB
-        if (err && err.code === 'auth/email-already-in-use') {
-          this.login(email, pass)
-            .then((user) => {
-              if (user && user.uid) {
-                this.db.list('/users', ref => ref.orderByChild('_id').equalTo(user.uid))
-                  .valueChanges()
-                  .subscribe((userInDb) => {
-                    if (userInDb && !userInDb.length) {
-                      this.db.list('/users')
-                        .set(user.uid, createUser(user));
-                    }
-                  });
-              }
-            })
-            .catch((err) => {
-              console.log('>>>>> email-already-in-use', err);
-            });
-        }
-      });
+    return new Promise((resolve, reject) => {
+      return this.afAuth.auth
+        .createUserWithEmailAndPassword(email, pass)
+        .then((authUser) => authUser && authUser.uid && this.setUserById(authUser.uid, setUserData(authUser)))
+        .then((res) => resolve(res))
+        .catch((err: any) => {
+          // Ensure User in DB if already exists in FB AUTH but not in FB DB
+          if (err && err.code === 'auth/email-already-in-use') {
+            this.login(email, pass)
+              .then((authUser) => {
+                if (!authUser) {
+                  return reject('No user after login');
+                }
+
+                this.getUserById(authUser.uid).subscribe((userInDb) => {
+                  return userInDb && userInDb.payload.val() ?
+                    resolve(userInDb.payload.val()) :
+                    resolve(this.setUserById(authUser.uid, setUserData(authUser)));
+                })
+              })
+              .catch((err) => reject(err));
+          } else {
+            return reject(err);
+          }
+        });
+    });
   }
 
   logout() {
