@@ -8,6 +8,7 @@ import {AppRoutingModule} from "./app-routing.module";
 import {PublicModule} from './public/public.module';
 import {AuthService} from "./services/auth.service";
 import {PrivateModule} from "./private/private.module";
+import {SubscribeService} from "./services/subscribe.service";
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import {PrivateModule} from "./private/private.module";
     NgbModule.forRoot()
   ],
   providers: [
-    AuthService
+    AuthService,
+    SubscribeService
   ],
   bootstrap: [AppComponent]
 })

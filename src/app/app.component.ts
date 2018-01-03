@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {UserService} from "./services/user.service";
-import {AuthService} from "./services/auth.service";
+import {SubscribeService} from "./services/subscribe.service";
 
 @Component({
   selector: 'app-root',
@@ -13,12 +13,17 @@ export class AppComponent {
   navState:boolean = false;
 
   constructor(private UserService: UserService,
-              private AuthService: AuthService) {
-    UserService.user$.subscribe(user => this.user = user)
+  private SubscribeService: SubscribeService) {
+    UserService.getMe().subscribe(user => this.user = user)
   }
 
   logout() {
-    this.UserService.logout();
+    this.SubscribeService.unsubscribeAll()
+      .then(() => this.UserService.logout())
+      .catch(() => {
+        console.log('>>>>> unsubscribeAll ERROR');
+        this.UserService.logout();
+      });
   }
 
   toggleNav() {

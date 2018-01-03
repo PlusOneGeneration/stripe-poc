@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {AngularFireDatabase} from 'angularfire2/database';
 import {UserService} from "../../services/user.service";
 import {PaymentService} from "./payment.service";
+import {SubscribeService} from "../../services/subscribe.service";
 
 @Injectable()
 export class OfferService {
@@ -10,11 +11,14 @@ export class OfferService {
 
   constructor(private db: AngularFireDatabase,
               private UserService: UserService,
-              private PaymentService: PaymentService) {
-    this.UserService.getMe().subscribe((user) => {
+              private PaymentService: PaymentService,
+              private SubscribeService: SubscribeService) {
+    let subUser = this.UserService.getMe().subscribe((user) => {
       this.user = user;
-      this.PaymentService.getStripeData().subscribe((userStripe: any) => this.userStripe = userStripe);
+      let subStripe = this.PaymentService.getStripeData().subscribe((userStripe: any) => this.userStripe = userStripe);
+      this.SubscribeService.add(subStripe);
     });
+    this.SubscribeService.add(subUser);
   }
 
   addOffer(data) {

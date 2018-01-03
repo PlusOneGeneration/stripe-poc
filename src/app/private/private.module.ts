@@ -16,6 +16,7 @@ import {ProductsComponent} from './products/products.component';
 import {OffersComponent} from './offers/offers.component';
 import {OrdersComponent} from './orders/orders.component';
 import {MakeOfferComponent} from './offers/make-offer/make-offer.component';
+import {SubscribeService} from "../services/subscribe.service";
 
 @NgModule({
   imports: [
@@ -40,7 +41,8 @@ import {MakeOfferComponent} from './offers/make-offer/make-offer.component';
     WithoutUserPipe,
     PaymentService,
     ProductService,
-    OfferService
+    OfferService,
+    SubscribeService
   ],
   exports: [
     PrivateComponent,

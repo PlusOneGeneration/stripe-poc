@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../services/user.service";
 import {NgForm} from '@angular/forms';
 import {PaymentService} from "../services/payment.service";
+import {SubscribeService} from "../../services/subscribe.service";
 
 @Component({
   selector: 'app-profile',
@@ -13,14 +14,15 @@ export class ProfileComponent implements OnInit {
   stripe: any = null;
 
   constructor(private UserService: UserService,
-              private PaymentService: PaymentService) {
-    this.UserService.user$.subscribe((user) => {
+              private PaymentService: PaymentService,
+              private SubscribeService: SubscribeService) {
+    let subUser = this.UserService.getMe().subscribe((user) => {
       this.me = user;
 
-      this.PaymentService.getStripeData().subscribe((stripe) => {
-        this.stripe = stripe;
-      });
+      let subStripe = this.PaymentService.getStripeData().subscribe((stripe) => this.stripe = stripe);
+      this.SubscribeService.add(subStripe);
     });
+    this.SubscribeService.add(subUser);
   }
 
   ngOnInit() {

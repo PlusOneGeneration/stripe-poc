@@ -3,6 +3,7 @@ import {UserService} from "../../services/user.service";
 import {OfferService} from "../services/offer.service";
 import {Observable} from "rxjs/Observable";
 import {NgForm} from '@angular/forms';
+import {SubscribeService} from "../../services/subscribe.service";
 
 @Component({
   selector: 'app-offers',
@@ -15,8 +16,9 @@ export class OffersComponent implements OnInit {
   offers$: Observable< Array<any> >;
 
   constructor(private UserService: UserService,
-              private OfferService: OfferService) {
-    this.UserService.getMe().subscribe((user) => {
+              private OfferService: OfferService,
+              private SubscribeService: SubscribeService) {
+    let sub = this.UserService.getMe().subscribe((user) => {
       this.me = user;
 
       if (this.me) {
@@ -24,6 +26,8 @@ export class OffersComponent implements OnInit {
         this.offers$ = this.OfferService.getMyOffers();
       }
     });
+
+    this.SubscribeService.add(sub);
   }
 
   ngOnInit() {

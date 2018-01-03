@@ -2,30 +2,13 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {AngularFireAuth} from 'angularfire2/auth';
 import {AngularFireDatabase} from 'angularfire2/database';
-import {Router} from "@angular/router";
 
 @Injectable()
 export class UserService {
   user$: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor(public afAuth: AngularFireAuth,
-              private router: Router,
               private db: AngularFireDatabase) {
-
-    this.afAuth.auth.onAuthStateChanged((user) => {
-      if (user && user.uid) {
-        this.db.database.goOnline();
-        this.db.object(`/users/${user.uid}`).valueChanges()
-          .subscribe((userDb) => {
-            this.updateUser(userDb);
-            this.router.navigateByUrl('/private');
-          });
-      } else {
-        this.updateUser(null);
-        this.db.database.goOffline();
-        this.router.navigateByUrl('/auth');
-      }
-    });
   }
 
   updateUser(user) {
@@ -112,6 +95,6 @@ export class UserService {
   }
 
   logout() {
-    this.afAuth.auth.signOut();
+    return this.afAuth.auth.signOut();
   }
 }

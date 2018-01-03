@@ -3,6 +3,8 @@ import {AngularFireDatabase} from 'angularfire2/database';
 import {UserService} from "../../services/user.service";
 import {environment} from "../../../environments/environment";
 import {HttpClient} from '@angular/common/http';
+import {Observable} from "rxjs/Observable";
+import {SubscribeService} from "../../services/subscribe.service";
 
 @Injectable()
 export class PaymentService {
@@ -11,8 +13,10 @@ export class PaymentService {
 
   constructor(private db: AngularFireDatabase,
               private http: HttpClient,
-              private UserService:UserService) {
-    this.UserService.getMe().subscribe((user) => this.user = user);
+              private UserService: UserService,
+              private SubscribeService: SubscribeService) {
+    let subUser = this.UserService.getMe().subscribe((user) => this.user = user);
+    this.SubscribeService.add(subUser);
   }
 
   updateStripe(data) {
@@ -24,10 +28,10 @@ export class PaymentService {
   }
 
   getStripeData() {
-    return this.db.object('/stripes/' + this.user._id).valueChanges()
+    return this.user && this.user._id ? this.db.object('/stripes/' + this.user._id).valueChanges() : Observable.of(null);
   }
 
-  openCheckout(offer: any):void {
+  openCheckout(offer: any): void {
     let stripeData = {
       name: environment.name,
       description: `Purchase: "${offer.payload.val().product.title}"`,

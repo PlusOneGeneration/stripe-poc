@@ -5,6 +5,7 @@ import {OfferService} from "../../services/offer.service";
 import {UserService} from "../../../services/user.service";
 import {ProductService} from "../../services/product.service";
 import {Observable} from "rxjs/Observable";
+import {SubscribeService} from "../../../services/subscribe.service";
 
 @Component({
   selector: 'app-make-offer',
@@ -24,12 +25,15 @@ export class MakeOfferComponent implements OnInit, OnDestroy {
               private router:Router,
               private UserService: UserService,
               private ProductService: ProductService,
-              private OfferService: OfferService) {
+              private OfferService: OfferService,
+              private SubscribeService: SubscribeService) {
     this.sub = this.route.params.subscribe(params => {
       this.userId = params['userId'];
-      this.UserService.getUserById(params['userId']).subscribe((user) => {
+      let subUser = this.UserService.getUserById(params['userId']).subscribe((user) => {
         this.user = user.payload.val();
       });
+
+      this.SubscribeService.add(subUser);
     });
 
     this.products$ = this.ProductService.getProducts();
