@@ -1,23 +1,28 @@
 {
   "rules": {
+    //@@@TODO todo I am not sure that I should have access to write another user
     "users": {
       ".read": "auth != null",
       ".write": "auth != null",
       ".indexOn": "_id"
     },
 
+    //@@@TODO todo I am not sure that I should have access to write product of another user for example change price
     "products": {
       ".read": "auth != null",
       ".write": "auth != null",
       ".indexOn": "createdBy"
     },
 
+    //@@@TODO todo same for write
+    //@@@TODO todo read only for me and offer creator
     "offers": {
       ".read": "auth != null",
       ".write": "auth != null",
       ".indexOn": ["createdBy", "to"]
     },
 
+    //@@@TODO read: seems like only for me and order creator
     "orders": {
       ".read": "auth != null",
       ".write": false,

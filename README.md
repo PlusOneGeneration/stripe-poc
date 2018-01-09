@@ -35,3 +35,6 @@ Otherwise you can visit:
 
 It will allow to Make offers by **User1** to **User2** (or vice versa) and test purchase action from both sides (shop and customer points of view).
 
+# Review @@@
+- Please split apps to `frontend` and `functions`
+- Please check tags `@@@`
