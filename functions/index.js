@@ -4,6 +4,9 @@ const cors = require('cors');
 
 const Stripe = require('./services/stripe.service');
 const FireBase = require('./services/firebase.service');
+
+//TODO @@@slava use const instead of let
+//TODO @@@slava inject Firebase DB here
 let fb = new FireBase();
 
 const app = express();

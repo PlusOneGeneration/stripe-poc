@@ -1,3 +1,6 @@
+//TODO @@@slava const/let usage, use const instead
+
+//TODO @@@slava it would be great to have this code {{{
 const functions = require('firebase-functions');
 let config = functions.config();
 
@@ -9,7 +12,9 @@ admin.initializeApp({
 });
 
 const db = admin.database();
+//TODO @@@slava }}} reusable, please extract this to reuse
 
+//TODO @@@slava FirebaseService pretty common name. There is business logic for offers and orders mostly.
 class FirebaseService {
   getStripeByUserId(userId) {
     return new Promise((resolve, reject) => {
