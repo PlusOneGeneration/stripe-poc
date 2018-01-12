@@ -69,7 +69,7 @@ export class OfferService {
   }
 
   getMyOrders() {
-    return this.db.list('/orders',
+    return this.db.list('/orders/' + this.user._id,
       ref => ref.orderByChild('to').equalTo(this.user._id)
     ).snapshotChanges();
   }

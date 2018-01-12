@@ -2,9 +2,10 @@ const functions = require('firebase-functions');
 const express = require("express");
 const cors = require('cors');
 
-const Stripe = require('./services/stripe.service');
-const FireBase = require('./services/firebase.service');
-let fb = new FireBase();
+const StripeService = require('./services/stripe.service');
+const offerService = require('./services/offer.service');
+const orderService = require('./services/order.service');
+const userService = require('./services/user.service');
 
 const app = express();
 app.use(cors());
@@ -12,6 +13,7 @@ app.use(require("body-parser").urlencoded({extended: false}));
 
 app.post('/charge', (req, res) => {
   let shopId = req.body.shopId;
+  let customerId = req.body.customerId;
   let tokenId = req.body.source;
   let customerEmail = req.body.email;
   let chargeAmount = req.body.amount;
@@ -19,9 +21,9 @@ app.post('/charge', (req, res) => {
   let offerId = req.body.offerId;
   let stripeCustomerId = req.body.stripeCustomerId;
 
-  return fb.getStripeByUserId(shopId)
+  return userService.getStripeByUserId(shopId)
     .then((stripeData) => {
-      let stripe = new Stripe(stripeData.secret_key);
+      let stripe = new StripeService(stripeData.secret_key);
       let result = {};
 
       return stripe.getStripeUser(stripeCustomerId)
@@ -33,9 +35,9 @@ app.post('/charge', (req, res) => {
         })
         .then((charge) => {
           result['charge'] = charge;
-          return fb.updateOffer(offerId, charge);
+          return offerService.updateOffer(offerId, charge);
         })
-        .then((offer) => fb.createOrder(offerId, offer))
+        .then((offer) => orderService.createOrder(offerId, customerId, offer))
         .then(() => res.send(result));
     })
     .catch((err) => res.status(400).json({err: err}));

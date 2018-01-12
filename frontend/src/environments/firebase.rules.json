@@ -1,0 +1,50 @@
+{
+  "rules": {
+    "users": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": "_id",
+      "$userId": {
+        ".write": "$userId == auth.uid"
+      }
+    },
+
+    "products": {
+      "$userId": {
+        ".read": "$userId == auth.uid",
+        ".write": "auth != null && newData.child('createdBy').val() == auth.uid",
+        ".indexOn": "createdBy",
+        "$productId": {
+          ".write": "(data.exists() && data.child('createdBy').val() == auth.uid && newData.child('createdBy').val() == data.child('createdBy').val()) || (newData.child('createdBy').val() == auth.uid)"
+        }
+      }
+    },
+
+    "offers": {
+      ".read": "auth != null",
+      ".write": "auth != null && newData.child('createdBy').val() == auth.uid",
+      ".indexOn": ["createdBy", "to"],
+      "$offerId": {
+        ".write": "(data.exists() && data.child('createdBy').val() == auth.uid && newData.child('createdBy').val() == data.child('createdBy').val()) || (newData.child('createdBy').val() == auth.uid)"
+      }
+    },
+
+    "orders": {
+      ".write": false,
+      "$userId": {
+        ".read": "auth != null && $userId == auth.uid",
+        ".indexOn": ["createdBy", "to"],
+        "$orderId": {
+          ".read": "data.exists() && (data.child('to').val() == auth.uid) || (data.child('from').val() == auth.uid)"
+        }
+      }
+    },
+
+    "stripes": {
+      "$userId": {
+        ".read": "auth != null && $userId == auth.uid",
+        ".write": "auth != null && $userId == auth.uid"
+      }
+    }
+  }
+}

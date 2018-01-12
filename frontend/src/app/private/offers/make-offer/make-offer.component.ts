@@ -81,6 +81,7 @@ export class MakeOfferComponent implements OnInit, OnDestroy {
     this.resetError();
     this.selectedUser = false;
     this.selectedProduct = false;
+    this.router.navigateByUrl('/private/offers');
   }
 
   resetError() {

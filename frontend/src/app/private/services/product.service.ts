@@ -12,7 +12,7 @@ export class ProductService {
   }
 
   getProducts() {
-    return this.db.list('/products',
+    return this.db.list('/products/' + this.user._id,
       ref => ref.orderByChild('createdBy').equalTo(this.user._id)
     ).snapshotChanges();
   }
@@ -22,7 +22,7 @@ export class ProductService {
 
     return new Promise((resolve, reject) => {
       //noinspection TypeScriptUnresolvedFunction
-      return this.db.list('/products')
+      return this.db.list('/products/' + this.user._id)
         .push(data)
         .then(
           (res) => resolve(res),

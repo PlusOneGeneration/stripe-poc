@@ -49,7 +49,7 @@ export class UserService {
 
   setUserById(userId, data) {
     return new Promise((resolve, reject) => {
-      return this.db.list('/users').set(userId, data)
+      return this.db.object('/users/' + userId).set(data)
         .then(
           () => resolve(true),
           (err) => reject(err)
