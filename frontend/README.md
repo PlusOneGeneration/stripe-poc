@@ -27,7 +27,7 @@ Otherwise you can visit:
 4. Use `/src/environments/firebase.rules.json` as rules for FB Database 
 5. Don't forget to install Functions side. Follow `/functions/README.md` to setup and deploy functions.
 
-## Testing
+## Usage / Testing
 
 1. Visit `Sign In` (Signup) section to create at least pair of users for testing purposes. (ex. User1 and User2)
 2. Make pair of Stripe accounts.
